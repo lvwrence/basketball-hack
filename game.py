@@ -107,7 +107,7 @@ if __name__ == "__main__":
 
         try:
             dx, dy = get_net_velocity(start_net_coords, end_net_coords, dt)
-            x, y = predict_net_position(end_net_coords, dx, dy, 2.2)
+            x, y = predict_net_position(end_net_coords, dx, dy, 2)
             print("predict net position: ({},{})".format(x, y))
             shoot(x, y, most_recent_screenshot)
             round += 1
