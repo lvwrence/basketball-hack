@@ -1,9 +1,6 @@
 import subprocess
 import cv2
 import numpy as np
-from PIL import Image
-import pytesseract
-from time import sleep
 from time import time
 
 SCREEN_WIDTH = 1080
@@ -34,16 +31,9 @@ class IAintDoingThat(Exception):
 def screenshot():
     #global i
     subprocess.call("./get_screenshot.sh", shell=True)
-    #subprocess.call("cp screen.png screen_{}.png".format(i), shell=True)
+    # subprocess.call("cp screen.png screen_{}.png".format(i), shell=True)
     #i += 1
     return cv2.imread("screen.png")
-
-def get_current_score(image):
-    """Takes in the cropped screenshot and outputs the current score."""
-    # NEED TO FIX
-    score_region = image[125:250, 0:400]
-    pil_im = Image.fromarray(score_region)
-    return pytesseract.image_to_string(pil_im, config='-psm 8')
 
 def get_basketball_position(image):
     """Gets the x position of the basketball, normalized from 0 to 100."""
@@ -85,7 +75,7 @@ def get_net_velocity(start, end, dt):
     elif round < 40:
         if abs(dx) < SECOND_VELOCITY_THRESHOLD:
             raise IAintDoingThat()
-        return (450, 0) if dx > 0 else (-450, 0)
+        return (440, 0) if dx > 0 else (-440, 0)
     raise IndexError()
 
 
@@ -123,9 +113,10 @@ if __name__ == "__main__":
         #print "start: ({},{}) end: ({},{})".format(start_net_coords[0], start_net_coords[1], end_net_coords[0], end_net_coords[1])
         try:
             dx, dy = get_net_velocity(start_net_coords, end_net_coords, dt)
-            x, y = predict_net_position(end_net_coords, dx, dy, 2)
+            x, y = predict_net_position(end_net_coords, dx, dy, 1.8)
             #print "predict: ({},{})".format(x, y)
             shoot(x, y, most_recent_screenshot)
             round += 1
         except IAintDoingThat:
+            print("hello")
             continue
